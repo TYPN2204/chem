@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
     // -------------------------------------Screen GameOver------------------------------------------------
     
     public GameObject screenHome, screenIngame, screenGameover;
+
+    // Biến tạm để truyền vị trí quả cuối bị chém (dùng nếu không thay đổi hàm gọi)
+    private Vector3 lastFruitPos = Vector3.zero;
     
     //-----------------------------------------------------------------------------------------------------
     private void Awake()
@@ -203,7 +206,7 @@ public class GameManager : MonoBehaviour
     public void Play()
     {
         score = 0;
-
+        SoundManager.Instance.PlayGameStart();
         switch (gamemode)
         {
             case GameMode.Modebomb:
@@ -228,6 +231,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         StartCoroutine(ScreenGameOver());
+        SoundManager.Instance.PlayGameOver();
     }
     
     //reset doublescore
@@ -238,11 +242,12 @@ public class GameManager : MonoBehaviour
     }
     
     //update doublescore
-    public void IncreaseDoubleScore(int isDoubleScore)
+    public void IncreaseDoubleScore(int isDoubleScore, Vector3 fruitPos)
     {
+        SoundManager.Instance.PlayBonusCountUp();
         if (isDoubleScore == 1)
         {
-            FindObjectOfType<ComboManager>().AddScore();
+            FindObjectOfType<ComboManager>().AddScore(fruitPos);
             doubleScore++;
             doubleScoreText.text = doubleScore.ToString();
         }
@@ -266,12 +271,12 @@ public class GameManager : MonoBehaviour
     }
     
     //update score
-    public void IncreaseScore(int fruitscore)
+    public void IncreaseScore(int fruitscore, Vector3 fruitPos)
     {
         //combo text
         if (fruitscore > 0)
         {
-            FindObjectOfType<ComboManager>().AddScore();
+            FindObjectOfType<ComboManager>().AddScore(fruitPos);
         }
         //increase point
         score += fruitscore;
@@ -287,6 +292,12 @@ public class GameManager : MonoBehaviour
     {
         if (gamemode == GameMode.Modetime)
         {
+            if (timeRemaining <= 5) {
+                if (timeRemaining % 2 == 0)
+                    SoundManager.Instance.PlayTimeTick();
+                else
+                    SoundManager.Instance.PlayTimeTock();
+            }
             timeRemaining--;
             //freeze timer
             if (createCuts._freezing)
@@ -305,6 +316,7 @@ public class GameManager : MonoBehaviour
             // bi freeze lech 1 giay do phai goi den ham countdown
             if (timeRemaining == 0)
             {
+                SoundManager.Instance.PlayTimeUp();
                 timeRemainingText.GetComponent<Text>().text = "0:00";
                 //gamestate
                 isGameOver = true;
@@ -333,7 +345,8 @@ public class GameManager : MonoBehaviour
         FindObjectOfType<ComboManager>().StopCombo();
         if (gamemode==GameMode.Modetime)
         {
-            IncreaseScore(-5);
+            // Truyền Vector3.zero vì không có vị trí quả bị chém
+            IncreaseScore(-5, Vector3.zero);
             scoreText.DOColor(Color.red, 0.2f).onComplete += () =>
             {
                 scoreText.DOColor(_scoreTextColor, 0.2f);

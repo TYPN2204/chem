@@ -42,6 +42,7 @@ public class SpawnBonusBanana : MonoBehaviour {
         CancelInvoke("SpawnObject");
     }
     private void SpawnObject(){
+        SoundManager.Instance.PlayPowerupDeflect();
         if (!frenzybonus._frenzy && !gameManager.isGameOver)
         {
             if (GameObject.FindGameObjectWithTag("Pomegranate") == null)

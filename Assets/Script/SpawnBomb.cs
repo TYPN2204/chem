@@ -24,6 +24,8 @@ public class SpawnBomb : MonoBehaviour {
             if (GameObject.FindGameObjectWithTag("Pomegranate") == null)
             { 
                 _newObject = Instantiate (bombPrefab);
+                SoundManager.Instance.PlayBombFuse();
+                SoundManager.Instance.PlayThrowBomb();
                 _newObject.transform.position = new Vector2 (Random.Range(this.objectMinX, this.objectMaxX), this.objectY);
             }
         }

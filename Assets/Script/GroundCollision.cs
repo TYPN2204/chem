@@ -17,6 +17,7 @@ public class GroundCollision : MonoBehaviour
                 if (collision.gameObject.CompareTag("Fruit"))
                 {
                     FindObjectOfType<GameManager>().DecreaseLive(-1);
+                    SoundManager.Instance.PlayGank();
                 }
             }
             else if (gameManager.gamemode == GameManager.GameMode.Modetime)

@@ -52,6 +52,7 @@ public class SpawnObjects : MonoBehaviour
         {
             //Bắn qua thu i
             GameObject newObject = Instantiate(prefab[Random.Range(0, prefab.Length)]);
+            SoundManager.Instance.PlayThrowFruit();
             newObject.transform.position = spawnPositions[j % spawnPositions.Length];
             newObject.transform.DORotate(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)), 2, RotateMode.FastBeyond360);
             if (k == 1)

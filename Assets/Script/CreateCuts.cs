@@ -27,7 +27,6 @@ public class CreateCuts : MonoBehaviour
 
     void Start()
     {
-        //camera phong ban dau
         initialCameraOrthoSize = Camera.main.orthographicSize;
     }
 
@@ -73,7 +72,6 @@ public class CreateCuts : MonoBehaviour
 
     private void BananaBonus()
     {
-        //---------------------------------------------double banana----------------------------------------------------
         if (durationTimeBananaDouble <= 0 && _double)
         {
             doublePopup.transform.DOMove(doublepivotup.transform.position, 0.5f);
@@ -83,7 +81,7 @@ public class CreateCuts : MonoBehaviour
 
         if (durationTimeBananaDouble < -1 && _double)
         {
-            gameManager.IncreaseDoubleScore(0);
+            gameManager.IncreaseDoubleScore(0, Vector3.zero); // truyền vị trí mặc định
             _double = false;
         }
 
@@ -92,7 +90,6 @@ public class CreateCuts : MonoBehaviour
             doubleScorePopUp.transform.DOMove(doubleScorePivotUp.transform.position, 0.2f);
         }
 
-        //---------------------------------------------freeze banana----------------------------------------------------
         if (durationTimeBananaFreeze <= 0 && _freezing)
         {
             freezePopup.transform.DOMove(freezepivotup.transform.position, 0.5f);
@@ -102,7 +99,6 @@ public class CreateCuts : MonoBehaviour
             _freezing = false;
         }
 
-        //----------------------------------------------frenzy banana---------------------------------------------------
         if (durationTimeBananaFrenzy <= 0 && _frenzy)
         {
             frenzyPopup.transform.DOMove(frenzypivotup.transform.position, 0.5f);
@@ -118,7 +114,6 @@ public class CreateCuts : MonoBehaviour
             _frenzyreset = false;
         }
 
-        //-----------------------------------------------pomegranate----------------------------------------------------
         if (durationTimePomegranate > 0 && _pomegranate)
         {
             OnCutting();
@@ -136,47 +131,41 @@ public class CreateCuts : MonoBehaviour
             OnCuttingEnd();
         }
         
-        //tinh diem cac qua con trong man hinh neu qua luu da bi cat 
         if (_pomegranatecutted && durationTimePomegranate > -5)
         {
             var fruits = FindObjectsOfType<FruitObject>();
             foreach (var fruit in fruits)
             {
                 fruit.CutFruit();
-                gameManager.IncreaseScore(1);
+                gameManager.IncreaseScore(1, fruit.transform.position); // truyền vị trí quả
             }
         }
     }
 
-
     void OnBananaFreeze()
     {
-        //Popup and background
+        SoundManager.Instance.PlayBonusBananaFreeze(); // trong OnBananaFreeze
+        SoundManager.Instance.PlayPowerupDeflect(); // thêm vào mỗi hàm bonus nếu muốn hiệu ứng chung
         freezePopup.transform.DOMove(freezepivotdown.transform.position, 0.5f);
         freezebackground.GetComponent<SpriteRenderer>().DOFade(0.4f, 5f).SetUpdate(true).onComplete += () =>
         {
             freezebackground.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f);
         };
-        
-        //hieu ung freeze
-        gameManager.IncreaseScore(1);
+        gameManager.IncreaseScore(1, transform.position); // truyền vị trí chuột
         spawnfruit.spawnRate = 3f;
         spawnfruit.OnFrenzy();
         Time.timeScale = 0.5f;
         Time.fixedDeltaTime = 0.02F * Time.timeScale;
-        
-        //freeze time
         _freezing = true;
         durationTimeBananaFreeze = 5;
     }
 
     void OnBananaFrenzy()
     {
-        //pop up
+        SoundManager.Instance.PlayBonusBananaFrenzy(); // trong OnBananaFrenzy
+        SoundManager.Instance.PlayPowerupDeflect(); // thêm vào mỗi hàm bonus nếu muốn hiệu ứng chung
         frenzyPopup.transform.DOMove(frenzypivotdown.transform.position, 0.5f);
-        
-        //hieu ung frenzy time
-        gameManager.IncreaseScore(1);
+        gameManager.IncreaseScore(1, transform.position); // truyền vị trí chuột
         durationTimeBananaFrenzy = 5f;
         _frenzy = true;
         _frenzyreset = true;
@@ -188,17 +177,14 @@ public class CreateCuts : MonoBehaviour
 
     void OnBananaDouble()
     {
-        //pop up and background
+        SoundManager.Instance.PlayBonusBananaDouble(); // trong OnBananaDouble
+        SoundManager.Instance.PlayPowerupDeflect(); // thêm vào mỗi hàm bonus nếu muốn hiệu ứng chung
         doublebackground.GetComponent<SpriteRenderer>().DOFade(0.8f, 0.5f);
         doublePopup.transform.DOMove(doublepivotdown.transform.position, 0.5f);
         doubleScorePopUp.transform.DOMove(doubleScorePivotDown.transform.position, 0.5f);
-
-        //hieu ung double
         durationTimeBananaDouble = 5f;
         spawnfruit.spawnRate = 3f;
         spawnfruit.OnFrenzy();
-        
-        //double time
         _double = true;
         gameManager.DoubleScore();
     }
@@ -207,21 +193,16 @@ public class CreateCuts : MonoBehaviour
     {
         if (pomegranateTimeCoolDown <= 0 && durationTimePomegranate >=0)
         {
-            gameManager.IncreaseScore(1);
-            //spawn vet chem
+            gameManager.IncreaseScore(1, PomegranateFruitObj != null ? PomegranateFruitObj.transform.position : transform.position);
             pomegranateTimeCoolDown = 10 * Time.unscaledDeltaTime;
             cuteffect.transform.position = new Vector3(PomegranateFruitObj.transform.position.x,PomegranateFruitObj.transform.position.y,-1);
             cuteffect.transform.rotation = Quaternion.Euler(0,0,Random.Range(0,360));
             GameObject cut = Instantiate(cuteffect, cuteffect.transform.position,
                 cuteffect.transform.rotation);
-            //spawn nuoc luu
             GameObject effectcut = Instantiate(particlecuteffect, cuteffect.transform.position,
                 cuteffect.transform.rotation);
-            
-            //tat vet chem
             Destroy(cut,0.0003f); 
             Destroy(effectcut,1);
-            //cam giat dung dung
             int i = Random.Range(1, 5); 
             Vector3 targetPosition = Camera.main.transform.position;
             switch (i)
@@ -251,6 +232,7 @@ public class CreateCuts : MonoBehaviour
     void OnCut()
     {        
         Camera.main.DOOrthoSize(2.3f, 1.4f).SetUpdate(true);
+        SoundManager.Instance.PlayPomeRampdow();
         int k = Random.Range(1, 3);
         switch (k)
         {
@@ -272,38 +254,42 @@ public class CreateCuts : MonoBehaviour
     {
         if (PomegranateFruitObj != null)
         { 
+            SoundManager.Instance.PlayPomeSlice(3); // sliceIndex = 1,2,3
             Vector3 pomegranatePosition = PomegranateFruitObj.transform.position;
             pomegranatePosition.z = -11;
             Camera.main.transform.DOMove(pomegranatePosition,1f).SetUpdate(true);
-            
         }
     }
 
     void OnCuttingEnd()
     {  
+        SoundManager.Instance.PlayPomeZoomout();
         _pomegranate = false;
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02F * Time.timeScale;
         _pomegranatecutted = true;
+        SoundManager.Instance.PlayPomeBurst();
     }
 
     private void CreateCut()
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log("world pos of mouse" + worldPos);
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector3.forward,Mathf.Infinity);
-        Debug.DrawLine(worldPos, worldPos+Vector3.forward*100,Color.red);
         if (hit.collider != null)
         {
             if (hit.collider.CompareTag("Bomb"))
             {
+                SoundManager.Instance.PlayGank();
                 Destroy(hit.collider.gameObject);
+                SoundManager.Instance.PlayBombExplode();
+                SoundManager.Instance.PlayGank(); // nếu muốn phát đồng thời khi mất mạng
                 Instantiate(cutInBombPrefab, hit.transform.position, hit.transform.rotation);
                 gameManager.DecreaseLive(-1);
             }
             else if (hit.collider.CompareTag("Fruit"))
             {
                 FruitObject fruitObject = hit.collider.gameObject.GetComponent<FruitObject>();
+                SoundManager.Instance.PlaySwordSwipeRandom();
                 if (fruitObject != null)
                 {
                     fruitObject.CutFruit();
@@ -315,16 +301,15 @@ public class CreateCuts : MonoBehaviour
 
                 if (durationTimeBananaDouble > 0)
                 {
-                    gameManager.IncreaseDoubleScore(1);
+                    gameManager.IncreaseDoubleScore(1, hit.collider.transform.position); // truyền vị trí quả
                 }
                 else
                 {
-                    gameManager.IncreaseScore(1);
+                    gameManager.IncreaseScore(1, hit.collider.transform.position); // truyền vị trí quả
                 }
             }
             else if (hit.collider.CompareTag("BananaFreeze"))
             {
-                // Debug.Log("banana freeze hit");
                 FruitObject fruitObject = hit.collider.gameObject.GetComponent<FruitObject>();
                 if (fruitObject != null)
                 {
@@ -334,7 +319,6 @@ public class CreateCuts : MonoBehaviour
             }
             else if (hit.collider.CompareTag("BananaFrenzy"))
             {
-                // Debug.Log("banana frenzy hit");
                 FruitObject fruitObject = hit.collider.gameObject.GetComponent<FruitObject>();
                 if (fruitObject != null)
                 {
@@ -344,7 +328,6 @@ public class CreateCuts : MonoBehaviour
             }
             else if (hit.collider.CompareTag("BananaDouble"))
             {
-                // Debug.Log("banana double hit");
                 FruitObject fruitObject = hit.collider.gameObject.GetComponent<FruitObject>();
                 if (fruitObject != null)
                 {
@@ -354,16 +337,9 @@ public class CreateCuts : MonoBehaviour
             }
             else if (hit.collider.CompareTag("Pomegranate"))
             {
-                // Debug.Log("pomegranate hit");
                 PomegranateFruitObj = hit.collider.gameObject.GetComponent<FruitObject>();
                 OnPomegranate();
             }
         }
     }
-
-    // private void OnDrawGizmos()
-    // {
-    //     Gizmos.color = Color.red;
-    //     Gizmos.DrawRay(Camera.main.ScreenToWorldPoint(Input.mousePosition),Vector3.zero);
-    // }
 }

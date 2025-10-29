@@ -26,6 +26,7 @@ public class SpawnPomegranate : MonoBehaviour {
                 if (GameObject.FindGameObjectWithTag("Bomb") == null) 
                 {
                     GameObject newObject = Instantiate (this.prefab[Random.Range(0, prefab.Length)]);
+                    SoundManager.Instance.PlayPomeLp();
                     newObject.transform.position = new Vector2 (Random.Range(this.objectMinX, this.objectMaxX), this.objectY);
                     newObject.transform.DORotate(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)), 2, RotateMode.FastBeyond360);
                 }
