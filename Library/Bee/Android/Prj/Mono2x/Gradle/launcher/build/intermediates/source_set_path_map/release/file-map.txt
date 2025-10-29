@@ -1,0 +1,9 @@
+com.DefaultCompany.NinjaFruitClone.launcher-pngs-0 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\build\generated\res\pngs\release
+com.DefaultCompany.NinjaFruitClone.launcher-resValues-1 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\build\generated\res\resValues\release
+com.DefaultCompany.NinjaFruitClone.launcher-rs-2 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\build\generated\res\rs\release
+com.DefaultCompany.NinjaFruitClone.launcher-mergeReleaseResources-3 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\build\intermediates\incremental\release\mergeReleaseResources\merged.dir
+com.DefaultCompany.NinjaFruitClone.launcher-mergeReleaseResources-4 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\build\intermediates\incremental\release\mergeReleaseResources\stripped.dir
+com.DefaultCompany.NinjaFruitClone.launcher-merged_res-5 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\build\intermediates\merged_res\release
+com.DefaultCompany.NinjaFruitClone.launcher-main-6 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\src\main\res
+com.DefaultCompany.NinjaFruitClone.launcher-release-7 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\launcher\src\release\res
+com.DefaultCompany.NinjaFruitClone.launcher-packaged_res-8 D:\Project\ProjectWindow\chem\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary\build\intermediates\packaged_res\release
